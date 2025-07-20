@@ -2,18 +2,17 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('admin-view/', views.admin_view, name='admin_view'),
-    path('librarian-view/', views.librarian_view, name='librarian_view'),
-    path('member-view/', views.member_view, name='member_view'),
-]
-# relationship_app/urls.py
+    path("add_book/", views.add_book, name="add_book"),
+    path("edit_book/<int:pk>/", views.edit_book, name="edit_book"),
+    path("delete_book/<int:pk>/", views.delete_book, name="delete_book"),
 
-from django.urls import path
-from . import views
+    # Role-based views if required in your project
+    path("admin_view/", views.admin_view, name="admin_view"),
+    path("librarian_view/", views.librarian_view, name="librarian_view"),
+    path("member_view/", views.member_view, name="member_view"),
 
-urlpatterns = [
-    path('books/add/', views.add_book, name='add_book'),
-    path('books/<int:pk>/edit/', views.edit_book, name='edit_book'),
-    path('books/<int:pk>/delete/', views.delete_book, name='delete_book'),
-    path('books/', views.book_list, name='book_list'),  # Optional: List view for redirection
+    # Auth views
+    path("register/", views.register, name="register"),
+    path("login/", views.LoginView.as_view(template_name="login.html"), name="login"),
+    path("logout/", views.LogoutView.as_view(template_name="logout.html"), name="logout"),
 ]
