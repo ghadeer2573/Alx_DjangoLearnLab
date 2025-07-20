@@ -33,10 +33,13 @@ def books_in_library(library_name):
 def librarian_for_library(library_name):
     try:
         library = Library.objects.get(name=library_name)
-        librarian = library.librarian
+        librarian = Librarian.objects.get(library=library)  # ✅ هذا هو السطر المطلوب
         print(f"Librarian for {library.name}: {librarian.name}")
-    except (Library.DoesNotExist, Librarian.DoesNotExist):
-        print(f"No librarian found for library {library_name}.")
+    except Library.DoesNotExist:
+        print(f"No library named {library_name} found.")
+    except Librarian.DoesNotExist:
+        print(f"No librarian assigned to library {library_name}.")
+
 
 
 # You can test the functions like this:
