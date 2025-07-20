@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic.detail import DetailView
 from django.views.generic import CreateView
 from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Library, Book, UserProfile
@@ -33,9 +34,11 @@ class RegisterView(CreateView):
     form_class = UserCreationForm
     template_name = 'relationship_app/register.html'
 
-    def form_valid(self, form):
-        form.save()
-        return redirect('login')
+def form_valid(self, form):
+    user = form.save()
+    login(self.request, user)  # ← ← ← مهم جدًا للسطر المطلوب
+    return redirect('home')  # أو أي صفحة بعد التسجيل
+
 
 
 # Role-based access checks
