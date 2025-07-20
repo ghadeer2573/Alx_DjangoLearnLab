@@ -58,3 +58,19 @@ from .views.admin_view import admin_view
 urlpatterns = [
     path('admin-view/', admin_view, name='admin_dashboard'),
 ]
+from django.urls import path
+from .views import auth_views
+
+urlpatterns = [
+    path('login/', auth_views.login_view, name='login'),
+    path('logout/', auth_views.logout_view, name='logout'),
+    path('register/', auth_views.register_view, name='register'),
+]
+# LibraryProject/urls.py
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('relationship_app.urls')),
+]
