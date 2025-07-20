@@ -1,1 +1,1 @@
-{\rtf1}
+# init file for views
