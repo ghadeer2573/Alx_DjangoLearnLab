@@ -1,13 +1,8 @@
-# relationship_app/views.py
-from django.shortcuts import render, redirect
-from django.contrib.auth import login
-from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.views.generic import CreateView
-from django.contrib.auth.views import LoginView, LogoutView
 from .models import UserProfile
 
-# Role checkers
+# التحقق من الدور
 def is_admin(user):
     return hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
 
@@ -17,34 +12,31 @@ def is_librarian(user):
 def is_member(user):
     return hasattr(user, 'userprofile') and user.userprofile.role == 'Member'
 
-# Views
-@user_passes_test(is_admin)
+# العروض الخاصة بالأدوار
 @login_required
+@user_passes_test(is_admin)
 def admin_view(request):
     return render(request, 'relationship_app/admin_view.html')
 
-@user_passes_test(is_librarian)
 @login_required
+@user_passes_test(is_librarian)
 def librarian_view(request):
     return render(request, 'relationship_app/librarian_view.html')
 
-@user_passes_test(is_member)
 @login_required
+@user_passes_test(is_member)
 def member_view(request):
     return render(request, 'relationship_app/member_view.html')
 
-# Auth Views
-class CustomLoginView(LoginView):
-    template_name = 'relationship_app/login.html'
+from django.shortcuts import render
+from django.contrib.auth.decorators import user_passes_test, login_required
+from .models import UserProfile
 
-class CustomLogoutView(LogoutView):
-    template_name = 'relationship_app/logout.html'
+def is_admin(user):
+    return hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
 
-class RegisterView(CreateView):
-    form_class = UserCreationForm
-    template_name = 'relationship_app/register.html'
+@user_passes_test(is_admin)
+@login_required
+def admin_view(request):
+    return render(request, 'admin_view.html')
 
-    def form_valid(self, form):
-        user = form.save()
-        login(self.request, user)
-        return redirect('home')  # Change as needed
