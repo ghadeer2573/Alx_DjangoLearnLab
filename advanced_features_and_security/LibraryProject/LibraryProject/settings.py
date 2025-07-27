@@ -172,3 +172,5 @@ SECURE_BROWSER_XSS_FILTER = True
 
 # Prevent your app from being embedded in iframes (protects against clickjacking)
 X_FRAME_OPTIONS = 'DENY'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
