@@ -136,3 +136,22 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# SECURITY: Don't expose debug info in production
+DEBUG = False
+
+# SECURITY: Define allowed production hosts
+ALLOWED_HOSTS = ['yourdomain.com', '127.0.0.1']  # Update as needed
+
+# SECURITY HEADERS
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+
+# SECURITY: Use HTTPS cookies
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# (Optional) HSTS for HTTPS enforcement (enable only with HTTPS enabled)
+# SECURE_HSTS_SECONDS = 31536000
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True

@@ -23,3 +23,15 @@ def delete_book(request, book_id):
     book = get_object_or_404(Book, id=book_id)
     # Your delete logic
     pass
+
+from django.shortcuts import render
+from .models import Book
+from .forms import BookSearchForm
+
+def search_books(request):
+    form = BookSearchForm(request.GET)
+    results = []
+    if form.is_valid():
+        query = form.cleaned_data['query']
+        results = Book.objects.filter(title__icontains=query)
+    return render(request, 'bookshelf/book_list.html', {'form': form, 'books': results})
