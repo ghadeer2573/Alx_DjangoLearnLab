@@ -155,3 +155,20 @@ SESSION_COOKIE_SECURE = True
 # SECURE_HSTS_SECONDS = 31536000
 # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 # SECURE_HSTS_PRELOAD = True
+
+# Enforce HTTPS redirects
+SECURE_SSL_REDIRECT = True  # Automatically redirect all HTTP to HTTPS
+
+# HSTS (HTTP Strict Transport Security)
+SECURE_HSTS_SECONDS = 31536000  # One year in seconds
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply HSTS to all subdomains
+SECURE_HSTS_PRELOAD = True  # Allow this domain to be included in browser preload lists
+
+# Prevent browsers from MIME-type sniffing
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Enable browser's XSS filtering
+SECURE_BROWSER_XSS_FILTER = True
+
+# Prevent your app from being embedded in iframes (protects against clickjacking)
+X_FRAME_OPTIONS = 'DENY'
