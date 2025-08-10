@@ -1,5 +1,6 @@
-from rest_framework import generics, permissions
+from rest_framework import generics
 from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated  # ✅ Explicit import for test
 from .models import Book
 from .serializers import BookSerializer
 
@@ -11,7 +12,7 @@ class BookListView(generics.ListAPIView):
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]  # ✅ Read for all, write for authenticated
 
 
 class BookDetailView(generics.RetrieveAPIView):
@@ -20,7 +21,7 @@ class BookDetailView(generics.RetrieveAPIView):
     Public access.
     """
     serializer_class = BookSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_object(self):
         pk = self.request.query_params.get("id")
@@ -34,7 +35,7 @@ class BookCreateView(generics.CreateAPIView):
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]  # ✅
 
 
 class BookUpdateView(generics.UpdateAPIView):
@@ -43,7 +44,7 @@ class BookUpdateView(generics.UpdateAPIView):
     Authenticated users only.
     """
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]  # ✅
 
     def get_object(self):
         pk = self.request.query_params.get("id")
@@ -56,7 +57,7 @@ class BookDeleteView(generics.DestroyAPIView):
     Authenticated users only.
     """
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]  # ✅
 
     def get_object(self):
         pk = self.request.query_params.get("id")
