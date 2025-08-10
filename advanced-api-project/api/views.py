@@ -1,66 +1,63 @@
 from rest_framework import generics, permissions
+from rest_framework.generics import get_object_or_404
 from .models import Book
 from .serializers import BookSerializer
 
-# ListView: Retrieve all books (Read-only for everyone)
+
 class BookListView(generics.ListAPIView):
     """
     GET: List all books.
-    Read-only for unauthenticated users.
+    Public access.
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.AllowAny]  # Anyone can read
+    permission_classes = [permissions.AllowAny]
 
 
-# DetailView: Retrieve single book by ID
 class BookDetailView(generics.RetrieveAPIView):
     """
-    GET: Retrieve a single book by ID.
-    Read-only for unauthenticated users.
+    GET: Retrieve a single book by query param ?id=<id>.
+    Public access.
     """
-    queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.AllowAny]  # Anyone can read
+    permission_classes = [permissions.AllowAny]
+
+    def get_object(self):
+        pk = self.request.query_params.get("id")
+        return get_object_or_404(Book, pk=pk)
 
 
-# CreateView: Add a new book
 class BookCreateView(generics.CreateAPIView):
     """
     POST: Create a new book.
-    Requires authentication.
+    Authenticated users only.
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticated]
-       
-    def perform_create(self, serializer):
-        # Example: Ensure author is set to a specific default if missing
-        if 'author' not in self.request.data:
-            from .models import Author
-            default_author, _ = Author.objects.get_or_create(name="Unknown Author")
-            serializer.save(author=default_author)
-        else:
-            serializer.save()  # Only authenticated users
 
 
-# UpdateView: Modify existing book
 class BookUpdateView(generics.UpdateAPIView):
     """
-    PUT/PATCH: Update an existing book.
-    Requires authentication.
+    PUT/PATCH: Update a book using query param ?id=<id>.
+    Authenticated users only.
     """
-    queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_object(self):
+        pk = self.request.query_params.get("id")
+        return get_object_or_404(Book, pk=pk)
 
-# DeleteView: Remove a book
+
 class BookDeleteView(generics.DestroyAPIView):
     """
-    DELETE: Delete a book.
-    Requires authentication.
+    DELETE: Delete a book using query param ?id=<id>.
+    Authenticated users only.
     """
-    queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        pk = self.request.query_params.get("id")
+        return get_object_or_404(Book, pk=pk)
