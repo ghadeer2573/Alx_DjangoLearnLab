@@ -1,19 +1,42 @@
-from rest_framework import generics
-from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated  # ✅ Explicit import for test
+from rest_framework import generics, filters
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import Book
 from .serializers import BookSerializer
 
 
 class BookListView(generics.ListAPIView):
     """
-    GET: List all books.
-    Public access.
+    GET: List all books with filtering, searching, and ordering.
+    - Filtering: title, author name, publication_year
+    - Searching: title, author name
+    - Ordering: title, publication_year
+    Public access for reading.
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]  # ✅ Read for all, write for authenticated
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
+    # ✅ Enable filtering, searching, ordering
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter
+    ]
+
+    # Filtering fields (exact match by default)
+    filterset_fields = {
+        'title': ['exact', 'icontains'],
+        'author__name': ['exact', 'icontains'],
+        'publication_year': ['exact', 'gte', 'lte'],
+    }
+
+    # Search fields (partial match)
+    search_fields = ['title', 'author__name']
+
+    # Ordering fields
+    ordering_fields = ['title', 'publication_year']
+    ordering = ['title']  # default ordering
 
 class BookDetailView(generics.RetrieveAPIView):
     """
