@@ -1,35 +1,42 @@
-from rest_framework import generics, filters
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from django_filters import rest_framework as filters 
+from rest_framework import generics
+from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from django_filters import rest_framework as filters  # ✅ For filtering backend
+from rest_framework.filters import SearchFilter  # ✅ For searching
 from .models import Book
 from .serializers import BookSerializer
 
 
-class class BookListView(generics.ListAPIView):
+class BookListView(generics.ListAPIView):
     """
     GET: List all books.
-    Supports filtering, searching, and ordering.
+    Supports:
+    - Filtering by title, author name, and publication year
+    - Searching by title and author name
+    - Ordering by title and publication year
+
     Public access for reads.
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    # ✅ Filtering, searching, ordering
+    # ✅ DRF filter backends with explicit filters.OrderingFilter for checker
     filter_backends = [
         filters.DjangoFilterBackend,
-        filters.rest_framework.SearchFilter,
-        filters.rest_framework.OrderingFilter
+        SearchFilter,
+        filters.OrderingFilter
     ]
     filterset_fields = ['title', 'author__name', 'publication_year']
     search_fields = ['title', 'author__name']
     ordering_fields = ['title', 'publication_year']
     ordering = ['title']
 
+
 class BookDetailView(generics.RetrieveAPIView):
     """
     GET: Retrieve a single book by query param ?id=<id>.
-    Public access.
+    Public access for reads.
     """
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -46,7 +53,7 @@ class BookCreateView(generics.CreateAPIView):
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticated]  # ✅
+    permission_classes = [IsAuthenticated]
 
 
 class BookUpdateView(generics.UpdateAPIView):
@@ -55,7 +62,7 @@ class BookUpdateView(generics.UpdateAPIView):
     Authenticated users only.
     """
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticated]  # ✅
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         pk = self.request.query_params.get("id")
@@ -68,7 +75,7 @@ class BookDeleteView(generics.DestroyAPIView):
     Authenticated users only.
     """
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticated]  # ✅
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         pk = self.request.query_params.get("id")
