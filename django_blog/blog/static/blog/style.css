@@ -5,3 +5,7 @@ ul { list-style: none; padding: 0; }
 li { padding: 1rem 0; border-bottom: 1px solid #e5e7eb; }
 h3 { margin: 0 0 .25rem 0; }
 small { color: #6b7280; }
+.messages { padding: 0; list-style: none; margin: 0 0 1rem; }
+.message { padding: .5rem .75rem; border: 1px solid #e5e7eb; border-radius: .5rem; margin-bottom: .5rem; }
+.message.success { border-color: #10b981; }
+.message.error { border-color: #ef4444; }

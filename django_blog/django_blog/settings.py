@@ -147,3 +147,20 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# Auth redirects
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "post_list"
+LOGOUT_REDIRECT_URL = "post_list"
+
+# Media (for avatars)
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent.parent
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+# (Messages are enabled by default; ensure context processor + middleware exist)
+# In TEMPLATES[0]['OPTIONS']['context_processors'] ensure:
+# "django.contrib.messages.context_processors.messages"
+# And in MIDDLEWARE ensure:
+# "django.contrib.messages.middleware.MessageMiddleware"
+
