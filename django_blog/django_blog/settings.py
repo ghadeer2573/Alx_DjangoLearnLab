@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "blog",
+    'taggit',
 ]
 
 LANGUAGE_CODE = "en-us"
