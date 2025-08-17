@@ -1,31 +1,20 @@
-{% extends "base.html" %}
-{% block title %}Register · Django Blog{% endblock %}
-{% block content %}
-  <h2>Create an account</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-    <div>
-      <label>Username</label>
-      {{ form.username.errors }}
-      {{ form.username }}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="{% static 'blog/css/style.css' %}">
+</head>
+<body>
+    <div class="auth-container">
+        <h2>Register</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn">Register</button>
+        </form>
+        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
     </div>
-    <div>
-      <label>Email</label>
-      {{ form.email.errors }}
-      {{ form.email }}
-    </div>
-    <div>
-      <label>Password</label>
-      {{ form.password1.errors }}
-      {{ form.password1 }}
-    </div>
-    <div>
-      <label>Confirm Password</label>
-      {{ form.password2.errors }}
-      {{ form.password2 }}
-    </div>
-    <button type="submit">Register</button>
-  </form>
-  <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
-{% endblock %}
+</body>
+</html>
