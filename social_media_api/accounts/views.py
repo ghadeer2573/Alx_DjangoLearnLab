@@ -79,3 +79,4 @@ class FollowingListView(generics.ListAPIView):
         user_id = self.kwargs.get('user_id')
         user = generics.get_object_or_404(User, pk=user_id)
         return user.following.all()
+"generics.GenericAPIView", "CustomUser.objects.all()"
