@@ -132,3 +132,4 @@ class PostViewSet(viewsets.ModelViewSet):
             return Response({"status": "post unliked"})
         except Like.DoesNotExist:
             return Response({"status": "not liked yet"}, status=status.HTTP_400_BAD_REQUEST)
+"generics.get_object_or_404(Post, pk=pk)"
