@@ -40,3 +40,4 @@ router = DefaultRouter()
 router.register(r"posts", PostViewSet, basename="posts")
 
 urlpatterns = router.urls
+"<int:pk>/like/", "<int:pk>/unlike/"
