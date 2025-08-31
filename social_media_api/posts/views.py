@@ -64,3 +64,31 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+# posts/views.py (add this to your existing viewset module or a new file)
+from rest_framework import generics, permissions
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
+from rest_framework.pagination import PageNumberPagination
+from .models import Post
+from .serializers import PostSerializer
+
+User = get_user_model()
+
+class FeedPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+class FeedListView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    pagination_class = FeedPagination
+
+    def get_queryset(self):
+        user = self.request.user
+        # get posts from users the current user follows, include user's own posts optionally
+        following_qs = user.following.all()  # users I'm following
+        # Optionally include your own posts:
+        # users = list(following_qs) + [user]
+        return Post.objects.filter(author__in=following_qs).order_by('-created_at').select_related('author')

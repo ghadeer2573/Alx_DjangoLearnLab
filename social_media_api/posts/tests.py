@@ -35,3 +35,42 @@ class PostsCommentsTests(APITestCase):
         self.assertEqual(resp.status_code, 201)
         self.assertEqual(Comment.objects.count(), 1)
         self.assertEqual(Comment.objects.first().author, self.user)
+# posts/tests.py (or a new tests_follow.py)
+from django.urls import reverse
+from rest_framework.test import APITestCase
+from django.contrib.auth import get_user_model
+from .models import Post
+
+User = get_user_model()
+
+class FollowFeedTests(APITestCase):
+    def setUp(self):
+        self.a = User.objects.create_user(username='alice', password='pass')
+        self.b = User.objects.create_user(username='bob', password='pass')
+        self.c = User.objects.create_user(username='cara', password='pass')
+
+        # bob and cara have posts
+        Post.objects.create(author=self.b, title='B1', content='bpost1')
+        Post.objects.create(author=self.c, title='C1', content='cpost1')
+
+        self.client.login(username='alice', password='pass')
+
+    def test_follow_and_see_feed(self):
+        # alice follows bob
+        url = reverse('follow', kwargs={'user_id': self.b.id})
+        resp = self.client.post(url)
+        assert resp.status_code == 200
+
+        # feed should now include bob's posts
+        feed_url = reverse('feed')
+        resp = self.client.get(feed_url)
+        assert resp.status_code == 200
+        data = resp.json()
+        assert any(item['title'] == 'B1' for item in data['results'])
+
+    def test_unfollow(self):
+        # follow then unfollow
+        self.client.post(reverse('follow', kwargs={'user_id': self.b.id}))
+        self.client.post(reverse('unfollow', kwargs={'user_id': self.b.id}))
+        resp = self.client.get(reverse('feed'))
+        assert resp.json()['results'] == []
