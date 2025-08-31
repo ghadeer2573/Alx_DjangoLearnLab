@@ -93,3 +93,42 @@ class FeedListView(generics.ListAPIView):
         # users = list(following_qs) + [user]
         return Post.objects.filter(author__in=following_qs).order_by('-created_at').select_related('author')
 "Post.objects.filter(author__in=following_users).order_by"
+from rest_framework import viewsets, permissions, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from .models import Post, Like
+from .serializers import PostSerializer
+from notifications.models import Notification
+
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all().order_by("-created_at")
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+    @action(detail=True, methods=["post"], permission_classes=[permissions.IsAuthenticated])
+    def like(self, request, pk=None):
+        post = self.get_object()
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
+        if created:
+            # Create a notification
+            Notification.objects.create(
+                recipient=post.author,
+                actor=request.user,
+                verb="liked your post",
+                target=post
+            )
+            return Response({"status": "post liked"})
+        return Response({"status": "already liked"}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["post"], permission_classes=[permissions.IsAuthenticated])
+    def unlike(self, request, pk=None):
+        post = self.get_object()
+        try:
+            like = Like.objects.get(user=request.user, post=post)
+            like.delete()
+            return Response({"status": "post unliked"})
+        except Like.DoesNotExist:
+            return Response({"status": "not liked yet"}, status=status.HTTP_400_BAD_REQUEST)

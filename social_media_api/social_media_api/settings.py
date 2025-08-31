@@ -44,6 +44,19 @@ INSTALLED_APPS = [
     'posts',
     'django_filters', 
 ]
+# settings.py
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authtoken.authentication.TokenAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+}
+
 
 REST_FRAMEWORK.update({
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
