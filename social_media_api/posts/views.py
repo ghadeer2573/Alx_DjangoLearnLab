@@ -92,3 +92,4 @@ class FeedListView(generics.ListAPIView):
         # Optionally include your own posts:
         # users = list(following_qs) + [user]
         return Post.objects.filter(author__in=following_qs).order_by('-created_at').select_related('author')
+"Post.objects.filter(author__in=following_users).order_by"
