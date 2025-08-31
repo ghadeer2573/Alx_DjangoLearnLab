@@ -17,3 +17,16 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
             return True
         # Write permissions only to owner
         return getattr(obj, 'author', None) == request.user
+
+from rest_framework import permissions
+
+class IsOwnerOrReadOnly(permissions.BasePermission):
+    """
+    Only owners of an object can edit/delete it.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        # SAFE_METHODS = GET, HEAD, OPTIONS → always allow
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return obj.author == request.user
